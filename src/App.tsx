@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import RegistroTable, { Registro } from "./components/RegistroTable";
 // import SyncControl from "./components/SyncControl";
 import EspConnector from "./core/espConnector";
+import WifiConnector from "./core/wifiConnector";
 import DataService from "./core/dataService";
 import NetworkStatus from "./core/networkStatus";
 
@@ -59,15 +60,25 @@ const App = () => {
   const handleConnectBalanza = async () => {
     setMessage(null);
     setLoading(true);
+    setMessage('Conectando');
     try {
-      // Simulación: en móvil real, aquí se usaría la API nativa para conectarse a la red WiFi "Balanza" con contraseña "12345678"
-      const ok = await EspConnector.connectToBalanza({ ssid: "Balanza", password: "12345678" });
-      if (ok) {
-        setMessage("Conectado a Balanza");
-        setOnline(true);
+      // Intentar plugin nativo primero
+      if ((window as any).Capacitor) {
+        const res = await WifiConnector.connectToBalanza({ ssid: 'Balanza', password: '12345678' });
+        if (res && (res.connected === true || res.connected === 'true')) {
+          setMessage('Conectado');
+          setOnline(true);
+        } else {
+          // fallback a la simulación
+          const ok = await EspConnector.connectToBalanza({ ssid: 'Balanza', password: '12345678' });
+          setMessage(ok ? 'Conectado (simulado)' : 'No se pudo conectar');
+          setOnline(ok);
+        }
       } else {
-        setMessage("No se pudo conectar a Balanza");
-        setOnline(false);
+        // Web or not capacitors - use existing simulation
+        const ok = await EspConnector.connectToBalanza({ ssid: 'Balanza', password: '12345678' });
+        setMessage(ok ? 'Conectado (simulado)' : 'No se pudo conectar');
+        setOnline(ok);
       }
     } catch (err: any) {
       setMessage(`Error: ${err?.message || err}`);
