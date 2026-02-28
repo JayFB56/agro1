@@ -1,0 +1,43 @@
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: radial-gradient(circle at 20% 20%, #f2f4f7, #e6e9ef 35%, #dde2ea);
+}
+
+.blank-surface {
+  width: min(640px, 100%);
+  min-height: 420px;
+  border-radius: 24px;
+  border: 1px dashed #cbd5e1;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(14px);
+  box-shadow:
+    0 20px 60px -28px rgba(15, 23, 42, 0.25),
+    0 8px 24px -12px rgba(15, 23, 42, 0.16);
+}
+
+/* Botón de descarga: debe contrastar con el fondo */
+.download-btn {
+  background: linear-gradient(180deg, #C6FAA5 0%, #A6E687 100%);
+  color: #0b3a00;
+  border: 1px solid rgba(11, 58, 0, 0.9);
+  padding: 0.5rem 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 8px 20px -6px rgba(11, 58, 0, 0.25);
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+.download-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.download-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -10px rgba(11, 58, 0, 0.30);
+}
+
+/* Fallback utility when Tailwind classes are not present */
+.btn-primary {
+  display: inline-block;
+}

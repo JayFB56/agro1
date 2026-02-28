@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "211984718143",
+    "project_id": "lechefacil",
+    "storage_bucket": "lechefacil.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:211984718143:android:ceb328878f6a1f58241b8a",
+        "android_client_info": {
+          "package_name": "com.lechefacil.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCeQm8S_ROh4GXcHw5DoWIEvcLEHDMVw6g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
