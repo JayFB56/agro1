@@ -13,9 +13,9 @@ workflows:
           if [ ! -f gradlew ]; then
             echo "gradlew no encontrado, listando archivos en android:"
             ls -l
-            echo "Intentando dar permisos a gradlew..."
-            chmod +x gradlew || true
           fi
+          echo "Dando permisos de ejecución a gradlew..."
+          chmod +x gradlew
           ./gradlew assembleDebug
     artifacts:
       - android/app/build/outputs/**/*.apk
