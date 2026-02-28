@@ -1,11 +1,12 @@
 // src/core/espConnector.ts
 // Clase para gestionar la conexión WiFi al ESP32 (red "Balanza")
 
-import { Plugins } from '@capacitor/core';
 let Wifi: any;
-try {
-  Wifi = require('@capgo/capacitor-wifi').Wifi;
-} catch {}
+if (typeof window !== 'undefined') {
+  import('@capgo/capacitor-wifi').then(mod => {
+    Wifi = mod.CapacitorWifi;
+  }).catch(() => {});
+}
 
 class EspConnector {
   private static instance: EspConnector;
