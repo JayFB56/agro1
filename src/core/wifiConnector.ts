@@ -1,19 +1,19 @@
-import { Plugins } from '@capacitor/core';
-const { WifiConnector, Permissions } = (Plugins as any);
+import * as Capacitor from '@capacitor/core';
 
-const REQUIRED_PERMISSIONS = [
-  'android.permission.ACCESS_FINE_LOCATION',
-  'android.permission.ACCESS_WIFI_STATE',
-  'android.permission.CHANGE_WIFI_STATE',
-  'android.permission.ACCESS_NETWORK_STATE',
-];
+const CapAny = (Capacitor as any) || (window as any).Capacitor || {};
+const Plugins = CapAny.Plugins || CapAny.Capacitor?.Plugins || (window as any).Capacitor?.Plugins || {};
+const WifiConnector = Plugins?.WifiConnector;
+const Permissions = Plugins?.Permissions;
 
 async function requestPermissionsIfNeeded() {
   try {
-    if (!Permissions || !Permissions.request) return { granted: true };
-    // Try generic location permission request via Capacitor Permissions plugin
-    const p = await Permissions.request({ name: 'location' } as any);
-    return p;
+    if (!Permissions) return { granted: true };
+    if (typeof Permissions.request === 'function') {
+      // Capacitor Permissions plugin
+      const p = await Permissions.request({ name: 'location' } as any);
+      return p;
+    }
+    return { granted: true };
   } catch (e) {
     return { granted: false, error: e };
   }
@@ -22,19 +22,20 @@ async function requestPermissionsIfNeeded() {
 export async function connectToBalanza(opts?: { ssid?: string; password?: string }) {
   const ssid = opts?.ssid || 'Balanza';
   const password = opts?.password || '12345678';
-  // Try request permissions first
   const perm = await requestPermissionsIfNeeded();
   if (perm && (perm.granted === false || perm.location === 'prompt')) {
     throw new Error('Permissions required');
   }
-  if (!WifiConnector || !WifiConnector.connectToBalanza) {
+
+  if (!WifiConnector || typeof WifiConnector.connectToBalanza !== 'function') {
     throw new Error('WifiConnector native plugin not available');
   }
+
   return WifiConnector.connectToBalanza({ ssid, password });
 }
 
 export async function disconnect() {
-  if (!WifiConnector || !WifiConnector.disconnect) return { disconnected: true };
+  if (!WifiConnector || typeof WifiConnector.disconnect !== 'function') return { disconnected: true };
   return WifiConnector.disconnect();
 }
 

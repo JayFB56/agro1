@@ -111,7 +111,50 @@ void mostrarOK() {
   lcd.setCursor(2,1);
   lcd.print("OK GUARDADO");
   digitalWrite(LED_PIN, HIGH);
-  delay(1300);
+  delay(1300);1: import { Plugins } from '@capacitor/core';
+            ^
+2: const { WifiConnector, Permissions } = (Plugins as any);
+    at getRollupError (file:///Users/builder/clone/node_modules/rollup/dist/es/shared/parseAst.js:401:41)
+    at error (file:///Users/builder/clone/node_modules/rollup/dist/es/shared/parseAst.js:397:42)
+    at Module.error (file:///Users/builder/clone/node_modules/rollup/dist/es/shared/node-entry.js:16946:16)
+    at Module.traceVariable (file:///Users/builder/clone/node_modules/rollup/dist/es/shared/node-entry.js:17400:29)
+    at ModuleScope.findVariable (file:///Users/builder/clone/node_modules/rollup/dist/es/shared/node-entry.js:15067:39)
+    at Identifier.bind (file:///Users/builder/clone/node_modules/rollup/dist/es/shared/node-entry.js:5415:40)
+    at VariableDeclarator.bind (file:///Users/builder/clone/node_modules/rollup/dist/es/shared/node-entry.js:2806:23)
+    at VariableDeclaration.bind (file:///Users/builder/clone/node_modules/rollup/dist/es/shared/node-entry.js:2802:28)
+    at Program.bind (file:///Users/builder/clone/node_modules/rollup/dist/es/shared/node-entry.js:2802:28)
+    at Module.bindReferences (file:///Users/builder/clone/node_modules/rollup/dist/es/shared/node-entry.js:16925:18)
+> vite_react_shadcn_ts@0.0.55 build
+> vite build
+
+vite v5.4.21 building for production...
+<script src="/env.js"> in "/index.html" can't be bundled without type="module" attribute
+transforming...
+✓ 57 modules transformed.
+x Build failed in 383ms
+error during build:
+src/core/wifiConnector.ts (1:9): "Plugins" is not exported by "node_modules/@capacitor/core/dist/index.js", imported by "src/core/wifiConnector.ts".
+file: /Users/builder/clone/src/core/wifiConnector.ts:1:9
+1: import { Plugins } from '@capacitor/core';
+            ^
+2: const { WifiConnector, Permissions } = (Plugins as any);
+    at getRollupError (file:///Users/builder/clone/node_modules/rollup/dist/es/shared/parseAst.js:401:41)
+    at error (file:///Users/builder/clone/node_modules/rollup/dist/es/shared/parseAst.js:397:42)
+    at Module.error (file:///Users/builder/clone/node_modules/rollup/dist/es/shared/node-entry.js:16946:16)
+    at Module.traceVariable (file:///Users/builder/clone/node_modules/rollup/dist/es/shared/node-entry.js:17400:29)
+    at ModuleScope.findVariable (file:///Users/builder/clone/node_modules/rollup/dist/es/shared/node-entry.js:15067:39)
+    at Identifier.bind (file:///Users/builder/clone/node_modules/rollup/dist/es/shared/node-entry.js:5415:40)
+    at VariableDeclarator.bind (file:///Users/builder/clone/node_modules/rollup/dist/es/shared/node-entry.js:2806:23)
+    at VariableDeclaration.bind (file:///Users/builder/clone/node_modules/rollup/dist/es/shared/node-entry.js:2802:28)
+    at Program.bind (file:///Users/builder/clone/node_modules/rollup/dist/es/shared/node-entry.js:2802:28)
+    at Module.bindReferences (file:///Users/builder/clone/node_modules/rollup/dist/es/shared/node-entry.js:16925:18)
+
+Build failed :|
+Step 3 script `npm run build` exited with status code 1
+
+
+Build failed :|
+Step 3 script `npm run build` exited with status code 1
   digitalWrite(LED_PIN, LOW);
   lcd.clear();
 }
