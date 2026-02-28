@@ -8,7 +8,14 @@ workflows:
       - npm install
       - npm run build
       - npx cap sync android
-      - cd android
-      - ./gradlew assembleDebug
+      - |
+          cd android
+          if [ ! -f gradlew ]; then
+            echo "gradlew no encontrado, listando archivos en android:"
+            ls -l
+            echo "Intentando dar permisos a gradlew..."
+            chmod +x gradlew || true
+          fi
+          ./gradlew assembleDebug
     artifacts:
       - android/app/build/outputs/**/*.apk
