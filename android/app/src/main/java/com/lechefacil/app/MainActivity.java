@@ -7,7 +7,5 @@ public class MainActivity extends BridgeActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// Register custom native plugin
-		registerPlugin(com.lechefacil.app.wificonnector.WifiConnectorPlugin.class);
 	}
 }
