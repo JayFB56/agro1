@@ -2,6 +2,7 @@ import "./App.css";
 
 import { useEffect, useState } from "react";
 import RegistroTable, { Registro } from "./components/RegistroTable";
+import CowFilter from "./components/CowFilter";
 import DataService from "./core/dataService";
 
 const DATA_HOST = "http://192.168.4.1";
@@ -11,6 +12,8 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [pendingCount, setPendingCount] = useState<number>(0);
+  const [filterCodes, setFilterCodes] = useState<string[] | null>(null);
+  const [filterAll, setFilterAll] = useState<boolean>(true);
 
   useEffect(() => {
     let mounted = true;
@@ -34,7 +37,7 @@ const App = () => {
     setLoading(true);
 
     try {
-      const result = await DataService.fetchData(DATA_HOST);
+      const result = await DataService.fetchData(DATA_HOST, filterAll ? null : filterCodes);
 
       setRegistros(result.all);
       setPendingCount(result.pendingCount);
@@ -73,6 +76,14 @@ const App = () => {
       )}
 
       <div className="mb-6 flex items-center gap-4">
+        <CowFilter
+          onChange={(codes, isAll) => {
+            setFilterCodes(codes);
+            setFilterAll(isAll);
+          }}
+          onError={(m) => setMessage(m)}
+        />
+
         <button
           className="download-btn px-3 py-1 rounded font-semibold"
           onClick={descargarRegistros}

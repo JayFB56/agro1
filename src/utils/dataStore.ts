@@ -35,7 +35,7 @@ function normalizeLine(line: string) {
 }
 
 // Accepts JSON, JSONL (newline-delimited JSON), or an object { last_id, records: [...]. }
-export async function addNewRecords(text: string): Promise<number> {
+export async function addNewRecords(text: string, filterCodes: string[] | null = null): Promise<number> {
   if (!text) return 0;
   // strip BOM
   if (text.charCodeAt(0) === 0xfeff) text = text.slice(1);
@@ -76,8 +76,8 @@ export async function addNewRecords(text: string): Promise<number> {
 
   console.info(`addNewRecords: parsed incoming length=${incoming.length}`);
 
-  // map incoming to Registro[] and deduplicate by uid (codigo|fecha|hora)
-  const mapped: Registro[] = incoming.map((item: any) => {
+  // map incoming to Registro[]
+  const mappedAll: Registro[] = incoming.map((item: any) => {
     const uid = item.id ?? `${item.code ?? item.codigo ?? ""}|${item.date ?? item.fecha ?? ""}|${item.time ?? item.hora ?? ""}`;
     return {
       id: String(item.id ?? uid),
@@ -89,6 +89,11 @@ export async function addNewRecords(text: string): Promise<number> {
       raw: JSON.stringify(item),
     } as Registro;
   });
+
+  // Apply filter by codes if provided
+  const mapped = filterCodes && filterCodes.length > 0
+    ? mappedAll.filter((r) => filterCodes.includes(String(r.codigo)))
+    : mappedAll;
 
   try {
     // Persist via core storage (idempotent, native storage on device)

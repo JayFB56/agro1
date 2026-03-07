@@ -7,7 +7,7 @@ import { downloadFromHost, confirmHost } from "./balance";
 const DEFAULT_DATA_HOST = "http://192.168.4.1";
 
 class DataService {
-  async fetchData(dataHost: string = DEFAULT_DATA_HOST) {
+  async fetchData(dataHost: string = DEFAULT_DATA_HOST, filterCodes: string[] | null = null) {
     let lastErr: any = null;
     let text: string | null = null;
     try {
@@ -23,7 +23,7 @@ class DataService {
     if (!text) {
       throw lastErr || new Error("No se pudo obtener datos");
     }
-    const added = await addNewRecords(text);
+    const added = await addNewRecords(text, filterCodes);
     if (added > 0) {
       await confirmHost(dataHost);
     }

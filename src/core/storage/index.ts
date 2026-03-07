@@ -70,9 +70,9 @@ async function fallbackSet(key: string, value: string): Promise<void> {
 // --- Utilidades ---
 
 function makeUid(r: Partial<Registro>): string {
-  // Asegurar que siempre devuelve string y manejar nulos con seguridad
-  if (r.id) return String(r.id);
-  return `${r.codigo || "NC"}|${r.fecha || "NF"}|${r.hora || "NH"}`;
+  // Composite UID using id + codigo + fecha + hora to avoid false duplicates
+  const parts = [r.id ? String(r.id) : "", r.codigo ?? "NC", r.fecha ?? "NF", r.hora ?? "NH"];
+  return parts.join("::");
 }
 
 async function readIndex(): Promise<Record<string, { status: StorageStatus; createdAt: string }>> {
@@ -103,13 +103,42 @@ export async function write(records: Registro[] | Registro): Promise<WriteResult
 
   const now = new Date().toISOString();
 
+  // Load existing items to perform composite checks and per-cow/day limits
+  const existingItems = await getAll();
+
   // Procesamos en serie para asegurar integridad del objeto index local
   for (const r of recs) {
     const uid = makeUid(r);
 
-    if (index[uid]) {
+    // Composite duplicate check: ID + Código + Fecha + Hora
+    const duplicate = existingItems.find((e) => {
+      const sameId = e.id && r.id ? String(e.id) === String(r.id) : false;
+      const sameCodigo = String(e.codigo ?? "") === String(r.codigo ?? "");
+      const sameFecha = String(e.fecha ?? "") === String(r.fecha ?? "");
+      const sameHora = String(e.hora ?? "") === String(r.hora ?? "");
+      return sameId && sameCodigo && sameFecha && sameHora;
+    });
+
+    if (duplicate) {
       skipped++;
-      continue; 
+      continue;
+    }
+
+    // Per-cow per-day restriction: max 2 records per codigo per fecha (AM and PM)
+    const sameDayForCow = existingItems.filter((e) => String(e.codigo ?? "") === String(r.codigo ?? "") && String(e.fecha ?? "") === String(r.fecha ?? ""));
+    if (sameDayForCow.length >= 2) {
+      // already have two records for that cow/date
+      skipped++;
+      continue;
+    }
+
+    // If there is already one record and it has same turno, skip as duplicate
+    if (sameDayForCow.length === 1 && r.turno) {
+      const existingTurno = sameDayForCow[0].turno ?? "";
+      if (existingTurno === r.turno) {
+        skipped++;
+        continue;
+      }
     }
 
     const item: StoredRegistro = {
